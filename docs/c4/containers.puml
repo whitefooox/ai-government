@@ -1,0 +1,25 @@
+@startuml containers
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Система анализа региональных проблем и поддержки принятия решений
+
+Person(user, "Пользователь", "Лицо, принимающее решения, аналитик")
+
+System_Boundary(system, "Система анализа региональных проблем") {
+    Container(web_app, "Веб-приложение", "Пользовательский интерфейс, визуализация данных", "Технологии: React, D3.js, HTML, CSS")
+    Container(api_gateway, "API Gateway", "Единая точка входа для клиентских запросов", "Технологии: Python, FastAPI")
+    Container(analysis_service, "Сервис анализа данных", "Сбор, обработка, категоризация проблем", "Технологии: Python, Pandas, NLTK, scikit-learn")
+    Container(decision_service, "Сервис поддержки принятия решений", "Моделирование бюджетных решений", "Технологии: Python, PuLP")
+    ContainerDb(database, "База данных", "Хранение данных о проблемах, регионах, бюджетных решениях", "Технологии: PostgreSQL")
+}
+
+System_Ext(social_networks, "Социальные сети", "Источники данных о региональных проблемах")
+
+Rel(user, web_app, "Использует", "HTTPS")
+Rel(web_app, api_gateway, "Отправляет запросы", "HTTPS")
+Rel(api_gateway, analysis_service, "Перенаправляет запросы", "JSON/HTTP")
+Rel(api_gateway, decision_service, "Перенаправляет запросы", "JSON/HTTP")
+Rel(analysis_service, database, "Читает/пишет данные", "SQL/ORM")
+Rel(decision_service, database, "Читает данные", "SQL/ORM")
+Rel(analysis_service, social_networks, "Собирает данные", "API, JSON/HTTP")
+@enduml
