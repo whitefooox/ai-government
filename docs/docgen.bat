@@ -1,1 +1,1 @@
-java -jar plantuml.jar -charset UTF-8 "./c4/*.puml" -ttxt -o "../build"
+java -jar plantuml.jar -charset UTF-8 -progress -duration "./*/*.puml" -svg -o "../build"

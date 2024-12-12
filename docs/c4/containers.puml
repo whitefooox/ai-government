@@ -1,25 +1,45 @@
-@startuml containers
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+@startuml
+!include <c4/C4_Container.puml> 
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/main/icons/devicons
+!define DEVICONS2 https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/main/icons/devicons2
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/main/icons/font-awesome
+!include DEVICONS/react.puml
+!include DEVICONS2/fastapi.puml
+!include DEVICONS/mongodb.puml
+!include DEVICONS/postgresql.puml
+!include DEVICONS/database.puml
+!include DEVICONS2/jupyter.puml
+!include FONTAWESOME/map.puml
+!include FONTAWESOME/rub.puml
+!include FONTAWESOME/vk.puml
 
-title Система анализа региональных проблем и поддержки принятия решений
+LAYOUT_WITH_LEGEND()
 
-Person(user, "Пользователь", "Лицо, принимающее решения, аналитик")
-
-System_Boundary(system, "Система анализа региональных проблем") {
-    Container(web_app, "Веб-приложение", "Пользовательский интерфейс, визуализация данных", "Технологии: React, D3.js, HTML, CSS")
-    Container(api_gateway, "API Gateway", "Единая точка входа для клиентских запросов", "Технологии: Python, FastAPI")
-    Container(analysis_service, "Сервис анализа данных", "Сбор, обработка, категоризация проблем", "Технологии: Python, Pandas, NLTK, scikit-learn")
-    Container(decision_service, "Сервис поддержки принятия решений", "Моделирование бюджетных решений", "Технологии: Python, PuLP")
-    ContainerDb(database, "База данных", "Хранение данных о проблемах, регионах, бюджетных решениях", "Технологии: PostgreSQL")
+Person(user, "Пользователь")
+System_Boundary(c1, "Система поддержки принятия решений в региональном финансировании") {
+    Container(web_frontend, "Single Page Application", "React", "Frontend-приложение, проведение аналитики, интерпретация результатов", "react")
+    Container(web_api, "API", "FastAPI", "Backend-приложение, API", "fastapi")
+    Container(information_collector, "Data Collection", "API, Parsing", "Модуль сбора данных из соцсетей", "database")
+    ContainerDb(no_sql, "Raw Data Storage", "MongoDB", "Хранилище необработанных данных", "mongodb")
+    Container(data_cleaner, "Data Cleaning", "Tokenization, Stemming, Lemmatization", "Модуль очистки данных и подготовки к анализу", "jupyter")
+    ContainerDb(sql_db, "Data Storage", "Postgres", "Хранилище обработанных данных, результатов аналитики, информации пользователей", "postgresql")
+    Container(data_analysis, "Data Analysis", "NLP methods, Machine Learning", "Модуль анализа данных и идентификации ключевых проблем", "jupyter")
+    Container(qgis, "Geographic Information System", "QGIS", "Геоинформационная система для визуальной интерпретации результатов", "map")
+    Container(finance, "Financial Decision Making Module", "Алгоритмы оптимизации и методы многокритериального принятия решений", "Модуль принятия финансовых решений", "rub")
 }
-
-System_Ext(social_networks, "Социальные сети", "Источники данных о региональных проблемах")
-
-Rel(user, web_app, "Использует", "HTTPS")
-Rel(web_app, api_gateway, "Отправляет запросы", "HTTPS")
-Rel(api_gateway, analysis_service, "Перенаправляет запросы", "JSON/HTTP")
-Rel(api_gateway, decision_service, "Перенаправляет запросы", "JSON/HTTP")
-Rel(analysis_service, database, "Читает/пишет данные", "SQL/ORM")
-Rel(decision_service, database, "Читает данные", "SQL/ORM")
-Rel(analysis_service, social_networks, "Собирает данные", "API, JSON/HTTP")
+System_Ext(social_media, "Social Networks", "VK, Telegram", "vk")
+Rel(user, web_frontend, "")
+Rel(web_frontend, web_api, "", "")
+Rel(web_api, information_collector, "", "")
+Rel_R(information_collector, data_cleaner, "", "")
+Rel_L(information_collector, social_media, "", "")
+Rel_R(information_collector, no_sql, "", "")
+Rel_L(data_cleaner, no_sql, "", "")
+Rel_U(data_cleaner, sql_db, "", "")
+Rel_U(web_api, data_analysis, "", "")
+Rel(data_analysis, sql_db, "", "")
+Rel_U(web_api, qgis, "", "")
+Rel(qgis, sql_db, "", "")
+Rel_L(web_api, finance, "", "")
+Rel(finance, sql_db, "", "")
 @enduml
