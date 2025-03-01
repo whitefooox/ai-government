@@ -1,0 +1,29 @@
+@startuml "Система обработки заказов"
+
+left to right direction
+
+actor :Продавец: as Saleperson
+usecase (Ввести новый заказ) as EnterNewOrder
+usecase (Изменить существующий заказ) as ModifyExistingOrder
+actor :Бухгалтерская система: as AccountingSystem
+
+Saleperson --> EnterNewOrder
+Saleperson --> ModifyExistingOrder
+EnterNewOrder --> AccountingSystem
+ModifyExistingOrder --> AccountingSystem
+
+actor :Управляющий магазином: as WarehouseManager
+usecase (Напечатать инвентарную опись) as PrintInventoryReport
+usecase (Обновить инвентарную опись) as RestockInventory
+
+WarehouseManager --> PrintInventoryReport
+WarehouseManager --> RestockInventory
+
+actor :Клерк магазина: as WarehouseClerk
+usecase (Оформить заказ) as FillOrder
+usecase (Отклонить заказ) as BackOrderItem
+
+WarehouseClerk --> FillOrder
+BackOrderItem .right.> FillOrder : <<extends>>
+
+@enduml

@@ -1,0 +1,68 @@
+@startuml Диаграмма вариантов использования с модульной декомпозицией
+
+left to right direction
+
+actor Аналитик as Analyst
+actor Администратор as Admin
+actor "Социальные сети" as SocialMedia <<External System>>
+
+rectangle "Система анализа" {
+  rectangle "Управление доступом" {
+    (Авторизоваться) as UC1
+    (Зарегистрировать пользователя) as UC2
+  }
+  
+  rectangle "Сбор данных" {
+    (Запустить сбор данных) as UC3
+    (Отменить сбор данных) as UC4
+    (Обработать ошибки сбора) as UC5
+  }
+  
+  rectangle "Анализ данных" {
+    (Проанализировать данные) as UC6
+    (Настроить параметры анализа) as UC7
+  }
+  
+  rectangle "Рекомендации" {
+    (Сформировать рекомендации) as UC8
+    (Скорректировать рекомендации) as UC9
+  }
+  
+  rectangle "Визуализация" {
+    (Просмотреть визуализацию) as UC10
+    (Экспортировать отчет) as UC11
+  }
+  
+  rectangle "Администрирование" {
+    (Управлять пользователями) as UC12
+    (Настроить систему) as UC13
+  }
+}
+
+Analyst --> UC1
+Analyst --> UC3
+Analyst --> UC4
+Analyst --> UC6
+Analyst --> UC8
+Analyst --> UC9
+Analyst --> UC10
+Analyst --> UC11
+
+Admin --> UC1
+Admin --> UC2
+Admin --> UC12
+Admin --> UC13
+Admin --> UC7
+
+UC3 --> SocialMedia
+
+UC3 .> UC5 : extends
+UC6 .> UC7 : includes
+UC8 .> UC9 : extends
+UC11 .> UC10 : includes
+UC13 .> UC7 : includes
+
+UC3 -[hidden]-> SocialMedia
+note on link: Использует данные из
+
+@enduml

@@ -1,0 +1,50 @@
+@startuml "Ввод нового заказа"
+
+actor Продавец as Saleperson
+participant "Выбор варианта заказа" as OrderOptionsForm
+participant "Форма деталей заказа" as OrderDetailForm
+participant "Управляющий заказами" as OrderManager
+participant "Заказ №1234" as OrderN1234
+participant "Управляющий транзакциями" as TransactionManager
+
+activate Saleperson
+
+Saleperson -> OrderOptionsForm : 1: Создать пустой заказ
+activate OrderOptionsForm
+
+OrderOptionsForm -> OrderDetailForm : 2: Открыть форму
+activate OrderDetailForm
+deactivate OrderOptionsForm
+deactivate OrderDetailForm
+Saleperson -> OrderDetailForm : 3: Ввести номер заказа,\nзаказчика и\nчисло заказываемых\nпредметов
+activate OrderDetailForm
+deactivate OrderDetailForm
+
+Saleperson -> OrderDetailForm : 4: Сохранить заказ
+activate OrderDetailForm
+
+OrderDetailForm -> OrderManager : 5: Сохранить заказ
+activate OrderManager
+OrderManager -> OrderN1234 : 6: Создать новый заказ
+activate OrderN1234
+deactivate OrderN1234
+OrderManager -> OrderN1234 : 7: Ввести номер заказа,\nзаказчика и\nчисло заказываемых\nпредметов
+activate OrderN1234
+deactivate OrderDetailForm
+deactivate OrderN1234
+
+OrderManager -> TransactionManager : 8: Сохранить заказ
+
+activate TransactionManager
+deactivate OrderManager
+TransactionManager -> OrderN1234 : 9: Информация о заказе
+activate OrderN1234
+deactivate Saleperson
+deactivate OrderN1234
+
+TransactionManager -> TransactionManager : 10: Сохранить информацию\nо заказе в базе данных
+
+deactivate OrderDetailForm
+
+
+@enduml
